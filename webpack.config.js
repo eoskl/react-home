@@ -1,5 +1,7 @@
 const HtmlWebPackPlugin = require("html-webpack-plugin");
 const ModuleFederationPlugin = require("webpack/lib/container/ModuleFederationPlugin");
+const TerserWebpackPlugin = require('terser-webpack-plugin');
+const CompressionWebpackPlugin = require('compression-webpack-plugin');
 
 const deps = require("./package.json").dependencies;
 module.exports = (_, argv) => ({
@@ -14,6 +16,15 @@ module.exports = (_, argv) => ({
   devServer: {
     port: 3000,
     historyApiFallback: true,
+  },
+
+  optimization: {
+    minimize: true,
+    minimizer: [
+      new TerserWebpackPlugin({
+        // additional options for Terser
+      }),
+    ],
   },
 
   module: {
@@ -40,6 +51,9 @@ module.exports = (_, argv) => ({
   },
 
   plugins: [
+    new CompressionWebpackPlugin({
+      // additional options for compression
+    }),
     new ModuleFederationPlugin({
       name: "home",
       filename: "remoteEntry.js",
